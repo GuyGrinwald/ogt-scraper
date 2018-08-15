@@ -10,12 +10,14 @@ class StoriesController < ApplicationController
 
 		@story = Story.scoped.where(url: canonical_url).first
 		if (@story.nil?)
-			@story = Story.new(url: canonical_url, status: :pending, scrape_data: {})
+			@story = Story.new(url: canonical_url, status: :pending)
 			
 			if !@story.save
 				Rails.logger.error "Error saving customer payment to the DB"
 			end
 		end
+
+		fetch canonical_url
 
 		Rails.logger.debug "Story: #{@story.to_json}"
 
@@ -26,9 +28,30 @@ class StoriesController < ApplicationController
 	end
 
 	def show
+		id_param = show_story_params
+		story = Story.scoped.where(id: id_param[:id]).first
+
+		@response = {}
+		@response[:id] = story.id.to_s
+		@response[:url] = story.url
+		@response[:scrape_status] = story.status
+		@response[:title] = story.title
+		@response[:images] = story.images
+		@response[:type] = story.ogt_type
+		@response[:updated_time] = story.status
+
+		respond_to do |format|
+			format.json 
+			render :partial => "stories/show.json"
+		end
 	end
 
 	private
+
+	def fetch url
+		Rails.logger.debug "Enqueuing new fetch job"
+		FetchOgtJob.perform_later url
+	end
 
 	def create_story_params
   		params.permit(:url)

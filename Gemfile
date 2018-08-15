@@ -5,7 +5,6 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.6'
 # # Use sqlite3 as the database for Active Record
@@ -37,6 +36,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'figaro'
 
 gem 'mongoid'
+
+gem 'opengraph_parser'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
