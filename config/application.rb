@@ -1,6 +1,13 @@
 require_relative 'boot'
 
-require 'rails/all'
+require 'rails'
+require "active_model/railtie"
+require "active_job/railtie"
+require "action_controller/railtie"
+require "action_mailer/railtie"
+require "action_view/railtie"
+require "sprockets/railtie"
+require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -14,5 +21,10 @@ module OgtScrapter
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+
+    config.log_formatter = proc do |severity, datetime, progname, msg|
+        date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+        "[#{date_format}] #{severity.ljust(5)} #{msg}\n"
+    end
   end
 end
